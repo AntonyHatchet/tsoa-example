@@ -1,5 +1,6 @@
 import './controllers/accountsController';
 import './controllers/usersController';
+import './controllers/reportsController';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as methodOverride from 'method-override';
