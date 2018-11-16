@@ -1,38 +1,10 @@
 /* tslint:disable */
 import { Controller, ValidateParam, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
-import { AccountsController } from './controllers/accountsController';
-import { UsersController } from './controllers/usersController';
+import { AvrController } from './controllers/avrController';
 import { ReportsController } from './controllers/reportsController';
 
 const models: TsoaRoute.Models = {
-    "User": {
-        "properties": {
-            "id": { "dataType": "double", "required": true },
-            "email": { "dataType": "string", "required": true },
-            "createdAt": { "dataType": "datetime", "required": true },
-        },
-    },
-    "TestAccount": {
-        "properties": {
-            "id": { "dataType": "double", "required": true },
-            "address": { "dataType": "string" },
-            "name": { "dataType": "string", "required": true },
-            "users": { "dataType": "array", "array": { "ref": "User" } },
-            "fields": { "dataType": "array", "array": { "dataType": "string" } },
-        },
-    },
-    "UserCreateRequest": {
-        "properties": {
-            "email": { "dataType": "string", "required": true },
-        },
-    },
-    "UserUpdateRequest": {
-        "properties": {
-            "createdAt": { "dataType": "datetime" },
-            "email": { "dataType": "string", "required": true },
-        },
-    },
-    "ReportVskAgentLockCommAvrData": {
+    "AvrLockCommData": {
         "properties": {
             "isn": { "dataType": "double", "required": true },
             "act_item_id": { "dataType": "double", "required": true },
@@ -64,18 +36,45 @@ const models: TsoaRoute.Models = {
             "flag": { "dataType": "double", "required": true },
         },
     },
-    "ReportVskAgentLockCommAvr": {
+    "AvrLockComm": {
         "properties": {
-            "data": { "dataType": "array", "array": { "ref": "ReportVskAgentLockCommAvrData" }, "required": true },
-            "pageCount": { "dataType": "double", "required": true },
+            "success": { "dataType": "boolean", "required": true },
+            "error": { "dataType": "any" },
+            "data": { "dataType": "array", "array": { "ref": "AvrLockCommData" } },
+            "pageCount": { "dataType": "double" },
+        },
+    },
+    "ReportLKAgentNumDogData": {
+        "properties": {
+            "agent_nsi": { "dataType": "string", "required": true },
+            "agent": { "dataType": "string", "required": true },
+            "agent_agreement_num": { "dataType": "string", "required": true },
+            "agent_agreement_id": { "dataType": "double", "required": true },
+            "policy_no": { "dataType": "string", "required": true },
+            "ins_type": { "dataType": "string", "required": true },
+            "insurant": { "dataType": "string", "required": true },
+            "policy_begin_date": { "dataType": "string", "required": true },
+            "policy_end_date": { "dataType": "string", "required": true },
+            "policy_gpw": { "dataType": "double", "required": true },
+            "commission": { "dataType": "double", "required": true },
+            "created": { "dataType": "double", "required": true },
+        },
+    },
+    "ReportLKAgentNumDog": {
+        "properties": {
+            "success": { "dataType": "boolean", "required": true },
+            "error": { "dataType": "any" },
+            "data": { "dataType": "array", "array": { "ref": "ReportLKAgentNumDogData" } },
+            "pageCount": { "dataType": "double" },
         },
     },
 };
 
 export function RegisterRoutes(app: any) {
-    app.get('/v1/Accounts/Current',
+    app.get('/v1/avr',
         function(request: any, response: any, next: any) {
             const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
             };
 
             let validatedArgs: any[] = [];
@@ -85,122 +84,10 @@ export function RegisterRoutes(app: any) {
                 return next(err);
             }
 
-            const controller = new AccountsController();
-
-
-            const promise = controller.current.apply(controller, validatedArgs);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/v1/Accounts/Users',
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new AccountsController();
-
-
-            const promise = controller.getUsers.apply(controller, validatedArgs);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/v1/Users/Current',
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.Current.apply(controller, validatedArgs);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/v1/Users/:userId',
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new UsersController();
+            const controller = new AvrController();
 
 
             const promise = controller.Get.apply(controller, validatedArgs);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/v1/Users',
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "body", "name": "request", "required": true, "ref": "UserCreateRequest" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.Create.apply(controller, validatedArgs);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/v1/Users/:userId',
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.Delete.apply(controller, validatedArgs);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.patch('/v1/Users',
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "body", "name": "request", "required": true, "ref": "UserUpdateRequest" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.Update.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/v1/report',

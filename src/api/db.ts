@@ -1,10 +1,7 @@
 import * as Pool from 'pg-pool';
 
-export const VSK_AGENT_LOCK_COMM_AVR = 0;
-
 export const dbConfig = {
     driver: 'pg',
-    schema: 'avr',
     host: 'localhost',
     database: 'portal',
     user: 'postgres',
@@ -18,17 +15,17 @@ export const dbConfig = {
 
 export class DB {
 
-    public query(queryString, callback) {
-        let pool = new Pool(dbConfig);
-        pool.connect().then(client => {
-            client.query(`${queryString}`)
-            .then(response => {
-                callback({success: true, data: response});
-            })
-            .catch(e => {
-                callback({success: true, data: e});
-            });
-        });
+    public async query(queryString) {
+        const pool = new Pool(dbConfig);
+        const client = await pool.connect();
+        try {
+            const response = await client.query(queryString);
+            client.release();
+            return {success: true, data: response};
+        } catch (e) {
+            client.release();
+            return {success: false, data: e};
+        }
     }
 
 }

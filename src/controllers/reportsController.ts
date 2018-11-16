@@ -1,15 +1,15 @@
 import * as express from 'express';
 import {Route, Get, Request} from 'tsoa';
-import {ReportVskAgentLockCommAvr} from '../models/reports';
-import {ReportsService, VSK_AGENT_LOCK_COMM_AVR} from '../services/reportsService';
+import {ReportLKAgentNumDog} from '../models/reports';
+import {ReportsService} from '../services/reportsService';
 
 @Route('report')
 export class ReportsController {
 
-    /** Get VSK_AGENT_LOCK_COMM_AVR database request */
+    /** Получаем отчет REPORTS_LK_AGENT_NUM_DOG */
     @Get()
-    public async Get(@Request() request: express.Request): Promise<ReportVskAgentLockCommAvr> {
-        const service = new ReportsService(request, VSK_AGENT_LOCK_COMM_AVR);
+    public async Get(@Request() request: express.Request): Promise<ReportLKAgentNumDog> {
+        const service = new ReportsService(request);
         return await service.get();
     }
 

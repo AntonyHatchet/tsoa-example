@@ -1,20 +1,19 @@
 import * as express from 'express';
-import {ReportLKAgentNumDog} from '../models/reports';
+import {AvrLockComm} from '../models/avr';
 import {DB} from '../api/db';
-import {REPORTS_LK_AGENT_NUM_DOG, REPORTS_LK_AGENT_VZNOS} from '../constants/reports';
+import {AVR_LOCK_COMM} from '../constants/avr';
 
 function getQuery(request) {
     let param = request.query;
     switch (Number(param.reportType)) {
-        case REPORTS_LK_AGENT_NUM_DOG: return `
-            select count(*) from reports.LK_agent_num_dog;
-            select * from reports.LK_agent_num_dog
-            limit ${param.limit}
-            offset ${param.page * param.limit}
-        `;
-        case REPORTS_LK_AGENT_VZNOS: return `
-            select count(*) from reports.LK_agent_vznos;
-            select * from reports.LK_agent_vznos
+        case AVR_LOCK_COMM: return `
+            select count(*) from avr.vsk_agent_lock_comm_avr;
+            select *
+            from avr.vsk_agent_lock_comm_avr
+            where
+                policy_begin_date between '${param.startDateFrom}' and '${param.startDateTo}' and
+                policy_end_date between '${param.endDateFrom}' and '${param.endDateTo}' and
+                agent_agreement_id = ${param.agreementId}
             limit ${param.limit}
             offset ${param.page * param.limit}
         `;
@@ -22,7 +21,7 @@ function getQuery(request) {
     }
 }
 
-export class ReportsService {
+export class AvrService {
 
     request: express.Request;
     queryString: string;
@@ -32,7 +31,7 @@ export class ReportsService {
         this.queryString = getQuery(request);
     }
 
-    public async get(): Promise<ReportLKAgentNumDog> {
+    public async get(): Promise<AvrLockComm> {
         const db = new DB();
         const response = await db.query(this.queryString);
         if (response.success) {

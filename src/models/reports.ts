@@ -1,36 +1,38 @@
-export interface ReportVskAgentLockCommAvrData {
-    isn: number;
-    act_item_id: number;
-    policy_no: string;
-    policy_id: string;
-    act_id: number;
-    act_no: string;
-    agent_agreement_id: number;
-    bank_statement_item_id: number;
-    source_no: string;
-    act_item_status: string;
-    policy_issue_date: string;
-    policy_begin_date: string;
-    policy_end_date: string;
-    amount_cur: number;
-    comm_cur_total: number;
-    comm_rate: number;
-    holder_name: string;
-    policy_holder_id: number;
-    agent_id: number;
-    policy_currency_id: number;
-    policy_currency_code: string;
-    item_status_id: number;
-    item_substatus_id: number;
-    main_policy_id: string;
-    oper_status: number;
-    sys_id: number;
-    case_id: string;
-    flag: number;
+export interface BaseReport {
+  agent_nsi: string; // НСИ агента
+  agent: string; // Агент (наименование)
+  agent_agreement_num: string; // Агентский договор (номер)
+  agent_agreement_id:  number; // ID агентского договора
+  policy_no: string; // Номер договора (полиса)
 }
 
-export interface ReportVskAgentLockCommAvr {
-    data: ReportVskAgentLockCommAvrData[];
-    pageCount: number;
+export interface ReportLKAgentNumDogData extends BaseReport {
+    ins_type: string; // Вид (страхования)
+    insurant: string; // Страхователь (ФИО / наименование)
+    policy_begin_date: string; // Дата начала ответственности
+    policy_end_date: string; // Дата окончания ответственности
+    policy_gpw: number; // Страховая премия начисленная (RUR)
+    commission: number; // КВ начисленное (RUR)
+    created: number; // Дата создания записи
 }
 
+export interface ReportLKAgentVznosData extends BaseReport {
+  insurant: string; // Страхователь
+  sum_to_pay: number; // Сумма к оплате (в чём неизвестно)
+  date_to_pay: string; // Дата оплаты
+  created: string; // Дата создания записи
+}
+
+export interface ReportLKAgentNumDog {
+    success: boolean;
+    error?: any;
+    data?: ReportLKAgentNumDogData[];
+    pageCount?: number;
+}
+
+export interface ReportLKAgentVznos {
+    success: boolean;
+    error?: any;
+    data?: ReportLKAgentVznosData[];
+    pageCount?: number;
+}

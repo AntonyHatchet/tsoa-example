@@ -1,5 +1,4 @@
-import './controllers/accountsController';
-import './controllers/usersController';
+import './controllers/avrController';
 import './controllers/reportsController';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
