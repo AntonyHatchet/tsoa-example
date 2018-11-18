@@ -1,7 +1,7 @@
 import * as express from 'express';
 import {ReportLKAgentNumDog} from '../models/reports';
-import {DB} from '../api/db';
 import {REPORTS_LK_AGENT_NUM_DOG, REPORTS_LK_AGENT_VZNOS} from '../constants/reports';
+import {DBService} from '../services/DBService';
 
 function getQuery(request) {
     let param = request.query;
@@ -33,28 +33,8 @@ export class ReportsService {
     }
 
     public async get(): Promise<ReportLKAgentNumDog> {
-        const db = new DB();
-        const response = await db.query(this.queryString);
-        if (response.success) {
-            let data = [];
-            let pageCount = response.data && response.data.length > 0 ? response.data[0].rows[0].count : 0;
-
-            let rows = response.data && response.data.length > 1 ? response.data[1].rows : [];
-            for (let row of rows) {
-                let keys = Object.keys(row);
-                let obj = {};
-
-                for (let key of keys) {
-                    obj[key] = row[key];
-                }
-
-                data.push(obj);
-            }
-
-            return {success: true, data: data, pageCount: pageCount};
-        } else {
-            return {success: false, error: response.data};
-        }
+        const db = new DBService(this.queryString);
+        return await db.get();
     }
 
 }

@@ -1,7 +1,7 @@
 import * as express from 'express';
 import {AvrLockComm} from '../models/avr';
-import {DB} from '../api/db';
 import {AVR_LOCK_COMM} from '../constants/avr';
+import {DBService} from '../services/DBService';
 
 function getQuery(request) {
     let param = request.query;
@@ -32,28 +32,8 @@ export class AvrService {
     }
 
     public async get(): Promise<AvrLockComm> {
-        const db = new DB();
-        const response = await db.query(this.queryString);
-        if (response.success) {
-            let data = [];
-            let pageCount = response.data && response.data.length > 0 ? response.data[0].rows[0].count : 0;
-
-            let rows = response.data && response.data.length > 1 ? response.data[1].rows : [];
-            for (let row of rows) {
-                let keys = Object.keys(row);
-                let obj = {};
-
-                for (let key of keys) {
-                    obj[key] = row[key];
-                }
-
-                data.push(obj);
-            }
-
-            return {success: true, data: data, pageCount: pageCount};
-        } else {
-            return {success: false, error: response.data};
-        }
+        const db = new DBService(this.queryString);
+        return await db.get();
     }
 
 }
