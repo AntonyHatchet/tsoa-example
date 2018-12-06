@@ -1,9 +1,13 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import './controllers/avrController';
 import './controllers/reportsController';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as methodOverride from 'method-override';
 import { RegisterRoutes } from './routes';
+
 
 const app = express();
 
