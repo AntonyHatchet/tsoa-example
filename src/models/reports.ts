@@ -1,12 +1,12 @@
 export interface BaseReport {
-  agent_nsi: string; // НСИ агента
-  agent: string; // Агент (наименование)
-  agent_agreement_num: string; // Агентский договор (номер)
-  agent_agreement_id:  number; // ID агентского договора
-  policy_no: string; // Номер договора (полиса)
+    agent_nsi: string; // НСИ агента
+    agent: string; // Агент (наименование)
+    agent_agreement_num: string; // Агентский договор (номер)
+    agent_agreement_id:  number; // ID агентского договора
+    policy_no: string; // Номер договора (полиса)
 }
 
-export interface ReportLKAgentNumDogData extends BaseReport {
+export interface ReportLKAgentSaleData extends BaseReport {
     ins_type: string; // Вид (страхования)
     insurant: string; // Страхователь (ФИО / наименование)
     policy_begin_date: string; // Дата начала ответственности
@@ -16,23 +16,24 @@ export interface ReportLKAgentNumDogData extends BaseReport {
     created: number; // Дата создания записи
 }
 
-export interface ReportLKAgentVznosData extends BaseReport {
-  insurant: string; // Страхователь
-  sum_to_pay: number; // Сумма к оплате (в чём неизвестно)
-  date_to_pay: string; // Дата оплаты
-  created: string; // Дата создания записи
+export interface ReportLKAgentNextPaymentData extends BaseReport {
+    insurant: string; // Страхователь
+    sum_to_pay: number; // Сумма к оплате (в чём неизвестно)
+    date_to_pay: string; // Дата оплаты
+    created: string; // Дата создания записи
 }
 
-export interface ReportLKAgentNumDog {
+export interface ReportLKAgentSale {
     success: boolean;
     error?: any;
-    data?: ReportLKAgentNumDogData[];
+    data?: ReportLKAgentSaleData[];
     pageCount?: number;
 }
 
-export interface ReportLKAgentVznos {
+export interface ReportLKAgentNextPayment {
     success: boolean;
     error?: any;
-    data?: ReportLKAgentVznosData[];
+    data?: ReportLKAgentNextPaymentData[];
     pageCount?: number;
 }
+

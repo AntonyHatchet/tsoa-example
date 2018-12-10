@@ -2,12 +2,18 @@ import * as express from 'express';
 import {AvrLockComm} from '../models/avr';
 import {AVR_LOCK_COMM} from '../constants/avr';
 import {DBService} from '../services/DBService';
+import {HandlerErrorService} from '../services/handleErrorService';
 
-function getQuery(request) {
+function getQuery(request, reportType) {
     let param = request.query;
-    switch (Number(param.reportType)) {
+    switch (reportType) {
         case AVR_LOCK_COMM: return `
-            select count(*) from avr.vsk_agent_lock_comm_avr;
+            select count(*)
+            from avr.vsk_agent_lock_comm_avr
+            where
+                policy_begin_date between '${param.startDateFrom}' and '${param.startDateTo}' and
+                policy_end_date between '${param.endDateFrom}' and '${param.endDateTo}' and
+                agent_agreement_id = ${param.agreementId};
             select *
             from avr.vsk_agent_lock_comm_avr
             where
@@ -15,7 +21,7 @@ function getQuery(request) {
                 policy_end_date between '${param.endDateFrom}' and '${param.endDateTo}' and
                 agent_agreement_id = ${param.agreementId}
             limit ${param.limit}
-            offset ${param.page * param.limit}
+            offset ${param.page * param.limit};
         `;
         default: return '';
     }
@@ -25,15 +31,20 @@ export class AvrService {
 
     request: express.Request;
     queryString: string;
+    requiredParams = ['agreementId', 'limit', 'page'];
 
     constructor(request: express.Request) {
         this.request = request;
-        this.queryString = getQuery(request);
     }
 
     public async get(): Promise<AvrLockComm> {
-        const db = new DBService(this.queryString);
-        return await db.get();
+        let errorHandler = new HandlerErrorService(this.request);
+        let error = errorHandler.validateQuery(this.requiredParams);
+        if (error) {
+            return error;
+        }
+        const db = new DBService(getQuery(this.request, AVR_LOCK_COMM));
+        return await db.get(this.request.query.limit);
     }
 
 }

@@ -17,7 +17,7 @@ app.use('/swagger.json', (req, res) => {
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '4096kb'}));
 app.use(methodOverride());
 
 RegisterRoutes(app);

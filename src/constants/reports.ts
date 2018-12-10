@@ -1,2 +1,2 @@
-export const REPORTS_LK_AGENT_NUM_DOG = 0;
-export const REPORTS_LK_AGENT_VZNOS = 1;
+export const REPORTS_LK_AGENT_SALE = 0;
+export const REPORTS_LK_AGENT_NEXT_PAYMENT = 1;

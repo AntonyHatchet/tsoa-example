@@ -8,12 +8,12 @@ export class DBService {
         this.queryString = queryString;
     }
 
-    public async get(): Promise<any> {
+    public async get(limit): Promise<any> {
         const db = new DB();
         const response = await db.query(this.queryString);
         if (response.success) {
             let data = [];
-            let pageCount = response.data && response.data.length > 0 ? response.data[0].rows[0].count : 0;
+            let pageCount = response.data && response.data.length > 0 ? Math.ceil(response.data[0].rows[0].count / limit) : 0;
 
             let rows = response.data && response.data.length > 1 ? response.data[1].rows : [];
             for (let row of rows) {
