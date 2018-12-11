@@ -130,7 +130,7 @@ export function RegisterRoutes(app: any) {
             const promise = controller.GetNextPayment.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/v1/reports/sale',
+    app.get('/v1/reports/sales',
         function(request: any, response: any, next: any) {
             const args = {
                 request: { "in": "request", "name": "request", "required": true, "dataType": "object" },

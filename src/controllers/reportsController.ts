@@ -14,7 +14,7 @@ export class ReportsController {
     }
 
     /** Получаем отчет REPORTS_LK_AGENT_NUM_DOG */
-    @Get('/sale')
+    @Get('/sales')
     public async GetSale(@Request() request: express.Request): Promise<ReportLKAgentSale> {
         const service = new ReportsService(request);
         return await service.getSale();
