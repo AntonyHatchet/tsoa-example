@@ -1,16 +1,23 @@
 import * as express from 'express';
 import {Route, Get, Request} from 'tsoa';
-import {ReportLKAgentNumDog} from '../models/reports';
+import {ReportLKAgentNextPayment, ReportLKAgentSale} from '../models/reports';
 import {ReportsService} from '../services/reportsService';
 
-@Route('report')
+@Route('reports')
 export class ReportsController {
 
     /** Получаем отчет REPORTS_LK_AGENT_NUM_DOG */
-    @Get()
-    public async Get(@Request() request: express.Request): Promise<ReportLKAgentNumDog> {
+    @Get('/next_payment')
+    public async GetNextPayment(@Request() request: express.Request): Promise<ReportLKAgentNextPayment> {
         const service = new ReportsService(request);
-        return await service.get();
+        return await service.getNextPayment();
+    }
+
+    /** Получаем отчет REPORTS_LK_AGENT_NUM_DOG */
+    @Get('/sales')
+    public async GetSale(@Request() request: express.Request): Promise<ReportLKAgentSale> {
+        const service = new ReportsService(request);
+        return await service.getSale();
     }
 
 }

@@ -44,7 +44,28 @@ const models: TsoaRoute.Models = {
             "pageCount": { "dataType": "double" },
         },
     },
-    "ReportLKAgentNumDogData": {
+    "ReportLKAgentNextPaymentData": {
+        "properties": {
+            "agent_nsi": { "dataType": "string", "required": true },
+            "agent": { "dataType": "string", "required": true },
+            "agent_agreement_num": { "dataType": "string", "required": true },
+            "agent_agreement_id": { "dataType": "double", "required": true },
+            "policy_no": { "dataType": "string", "required": true },
+            "insurant": { "dataType": "string", "required": true },
+            "sum_to_pay": { "dataType": "double", "required": true },
+            "date_to_pay": { "dataType": "string", "required": true },
+            "created": { "dataType": "string", "required": true },
+        },
+    },
+    "ReportLKAgentNextPayment": {
+        "properties": {
+            "success": { "dataType": "boolean", "required": true },
+            "error": { "dataType": "any" },
+            "data": { "dataType": "array", "array": { "ref": "ReportLKAgentNextPaymentData" } },
+            "pageCount": { "dataType": "double" },
+        },
+    },
+    "ReportLKAgentSaleData": {
         "properties": {
             "agent_nsi": { "dataType": "string", "required": true },
             "agent": { "dataType": "string", "required": true },
@@ -60,18 +81,18 @@ const models: TsoaRoute.Models = {
             "created": { "dataType": "double", "required": true },
         },
     },
-    "ReportLKAgentNumDog": {
+    "ReportLKAgentSale": {
         "properties": {
             "success": { "dataType": "boolean", "required": true },
             "error": { "dataType": "any" },
-            "data": { "dataType": "array", "array": { "ref": "ReportLKAgentNumDogData" } },
+            "data": { "dataType": "array", "array": { "ref": "ReportLKAgentSaleData" } },
             "pageCount": { "dataType": "double" },
         },
     },
 };
 
 export function RegisterRoutes(app: any) {
-    app.get('/v1/avr',
+    app.get('/v1/reports/avr',
         function(request: any, response: any, next: any) {
             const args = {
                 request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
@@ -90,7 +111,7 @@ export function RegisterRoutes(app: any) {
             const promise = controller.Get.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/v1/report',
+    app.get('/v1/reports/next_payment',
         function(request: any, response: any, next: any) {
             const args = {
                 request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
@@ -106,7 +127,26 @@ export function RegisterRoutes(app: any) {
             const controller = new ReportsController();
 
 
-            const promise = controller.Get.apply(controller, validatedArgs);
+            const promise = controller.GetNextPayment.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/v1/reports/sales',
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new ReportsController();
+
+
+            const promise = controller.GetSale.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
 

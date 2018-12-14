@@ -1,9 +1,13 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import './controllers/avrController';
 import './controllers/reportsController';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as methodOverride from 'method-override';
 import { RegisterRoutes } from './routes';
+
 
 const app = express();
 
@@ -13,7 +17,7 @@ app.use('/swagger.json', (req, res) => {
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '4096kb'}));
 app.use(methodOverride());
 
 RegisterRoutes(app);
