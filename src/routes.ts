@@ -1,7 +1,8 @@
 /* tslint:disable */
-import { Controller, ValidateParam, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
+import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
 import { AvrController } from './controllers/avrController';
 import { ReportsController } from './controllers/reportsController';
+import * as express from 'express';
 
 const models: TsoaRoute.Models = {
     "AvrLockCommData": {
@@ -90,8 +91,9 @@ const models: TsoaRoute.Models = {
         },
     },
 };
+const validationService = new ValidationService(models);
 
-export function RegisterRoutes(app: any) {
+export function RegisterRoutes(app: express.Express) {
     app.get('/v1/reports/avr',
         function(request: any, response: any, next: any) {
             const args = {
@@ -185,15 +187,15 @@ export function RegisterRoutes(app: any) {
                 case 'request':
                     return request;
                 case 'query':
-                    return ValidateParam(args[key], request.query[name], models, name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.query[name], name, fieldErrors);
                 case 'path':
-                    return ValidateParam(args[key], request.params[name], models, name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.params[name], name, fieldErrors);
                 case 'header':
-                    return ValidateParam(args[key], request.header(name), models, name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.header(name), name, fieldErrors);
                 case 'body':
-                    return ValidateParam(args[key], request.body, models, name, fieldErrors, name + '.');
+                    return validationService.ValidateParam(args[key], request.body, name, fieldErrors, name + '.');
                 case 'body-prop':
-                    return ValidateParam(args[key], request.body[name], models, name, fieldErrors, 'body.');
+                    return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, 'body.');
             }
         });
         if (Object.keys(fieldErrors).length > 0) {

@@ -1,7 +1,7 @@
 import * as express from 'express';
 import {ReportLKAgentSale, ReportLKAgentNextPayment} from '../models/reports';
 import {REPORTS_LK_AGENT_SALE, REPORTS_LK_AGENT_NEXT_PAYMENT} from '../constants/reports';
-import {DBService} from '../services/DBService';
+import {DbService} from '../services/databaseService';
 import {HandlerErrorService} from '../services/handleErrorService';
 
 function getQuery(request, reportType) {
@@ -51,7 +51,7 @@ export class ReportsService {
         if (error) {
             return error;
         }
-        const db = new DBService(getQuery(this.request, REPORTS_LK_AGENT_NEXT_PAYMENT));
+        const db = new DbService(getQuery(this.request, REPORTS_LK_AGENT_NEXT_PAYMENT));
         return await db.get(this.request.query.limit);
     }
 
@@ -61,7 +61,7 @@ export class ReportsService {
         if (error) {
             return error;
         }
-        const db = new DBService(getQuery(this.request, REPORTS_LK_AGENT_SALE));
+        const db = new DbService(getQuery(this.request, REPORTS_LK_AGENT_SALE));
         return await db.get(this.request.query.limit);
     }
 
