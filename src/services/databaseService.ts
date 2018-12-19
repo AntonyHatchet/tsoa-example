@@ -1,6 +1,6 @@
 import {DB} from '../api/db';
 
-export class DBService {
+export class DbService {
 
     queryString: string;
 

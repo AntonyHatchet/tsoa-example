@@ -1,7 +1,7 @@
 import * as express from 'express';
 import {ReportLKAgentSale, ReportLKAgentProlongation, ReportLKAgentNextPayment} from '../models/reports';
 import {REPORTS_LK_AGENT_SALE, REPORTS_LK_AGENT_PROLONGATION, REPORTS_LK_AGENT_NEXT_PAYMENT} from '../constants/reports';
-import {DBService} from '../services/DBService';
+import {DbService} from '../services/databaseService';
 import {HandlerErrorService} from '../services/handleErrorService';
 import {log} from '../api/log';
 
@@ -71,7 +71,7 @@ export class ReportsService {
         }
         const queryString = getQuery(this.request, REPORTS_LK_AGENT_NEXT_PAYMENT);
         log.debug('DB QUERY [Reports::Service:getNextPayment]: Debug', {sql_query: queryString});
-        const db = new DBService(queryString);
+        const db = new DbService(queryString);
         const response = await db.get(this.request.query.limit);
         log.debug('RESPONSE [Reports::Service:getNextPayment]: Debug', {response: response, method: 'GET'});
         return response;
@@ -87,7 +87,7 @@ export class ReportsService {
         }
         const queryString = getQuery(this.request, REPORTS_LK_AGENT_SALE);
         log.debug('DB QUERY [Reports::Service:getSale]: Debug', {sql_query: queryString});
-        const db = new DBService(queryString);
+        const db = new DbService(queryString);
         const response = await db.get(this.request.query.limit);
         log.debug('RESPONSE [Reports::Service:getSale]: Debug', {response: response, method: 'GET'});
         return response;
@@ -103,7 +103,7 @@ export class ReportsService {
         }
         const queryString = getQuery(this.request, REPORTS_LK_AGENT_PROLONGATION);
         log.debug('DB QUERY [Reports::Service:getProlongation]: Debug', {sql_query: queryString});
-        const db = new DBService(queryString);
+        const db = new DbService(queryString);
         const response = await db.get(this.request.query.limit);
         log.debug('RESPONSE [Reports::Service:getProlongation]: Debug', {response: response, method: 'GET'});
         return response;

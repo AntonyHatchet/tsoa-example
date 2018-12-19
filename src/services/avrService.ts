@@ -1,7 +1,7 @@
 import * as express from 'express';
 import {AvrLockComm} from '../models/avr';
 import {AVR_LOCK_COMM} from '../constants/avr';
-import {DBService} from '../services/DBService';
+import {DbService} from '../services/databaseService';
 import {HandlerErrorService} from '../services/handleErrorService';
 import {log} from '../api/log';
 
@@ -48,7 +48,7 @@ export class AvrService {
         }
         const queryString = getQuery(this.request, AVR_LOCK_COMM);
         log.debug('DB QUERY [Avr::Service:get]: Debug', {sql_query: queryString});
-        const db = new DBService(queryString);
+        const db = new DbService(queryString);
         const response = await db.get(this.request.query.limit);
         log.debug('RESPONSE [Avr::Service:get]: Debug', {response: response, method: 'GET'});
         return response;
