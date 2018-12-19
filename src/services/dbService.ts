@@ -29,7 +29,7 @@ export class DBService {
 
             return {success: true, data: data, pageCount: pageCount};
         } else {
-            return {success: false, error: response.data};
+            return {success: false, message: response.message, error: response.data};
         }
     }
 

@@ -1,4 +1,5 @@
 import * as Pool from 'pg-pool';
+import { log } from './log';
 
 export const dbConfig = {
     driver:  process.env.DB_DRIVER,
@@ -16,15 +17,29 @@ export const dbConfig = {
 export class DB {
 
     public async query(queryString) {
-        const pool = new Pool(dbConfig);
-        const client = await pool.connect();
         try {
-            const response = await client.query(queryString);
-            client.release();
-            return {success: true, data: response};
+            const pool = new Pool(dbConfig);
+            const client = await pool.connect();
+            try {
+                const response = await client.query(queryString);
+                client.release();
+                log.debug('DB RESPONSE [DB::Service:DB.query]: Debug', {db_response: response});
+                return {success: true, data: response};
+            } catch (e) {
+                client.release();
+                log.error('SQL [DB::Service:DB.query]: Error', {
+                    stack_trace: e,
+                    sql_query: `"${queryString.trim()}"`,
+                    code: e.code
+                });
+                return {success: false, message: 'DB query failed', data: e};
+            }
         } catch (e) {
-            client.release();
-            return {success: false, data: e};
+            log.error('DB CONNECT [DB::Service:DB.query]: Error', {
+                db_server: `${e.address}:${e.port}`,
+                code: e.code
+            });
+            return {success: false, message: 'DB connection failed', data: e};
         }
     }
 

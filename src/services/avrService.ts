@@ -3,6 +3,7 @@ import {AvrLockComm} from '../models/avr';
 import {AVR_LOCK_COMM} from '../constants/avr';
 import {DBService} from '../services/DBService';
 import {HandlerErrorService} from '../services/handleErrorService';
+import {log} from '../api/log';
 
 function getQuery(request, reportType) {
     let param = request.query;
@@ -38,13 +39,19 @@ export class AvrService {
     }
 
     public async get(): Promise<AvrLockComm> {
+        log.debug('REQUEST [Avr::Service:get]: Debug', {request: this.request.originalUrl, method: 'GET'});
         let errorHandler = new HandlerErrorService(this.request);
         let error = errorHandler.validateQuery(this.requiredParams);
         if (error) {
+            log.warn('QUERY [Avr::Service:get]: Warning', {response: error, method: 'GET', code: 400});
             return error;
         }
-        const db = new DBService(getQuery(this.request, AVR_LOCK_COMM));
-        return await db.get(this.request.query.limit);
+        const queryString = getQuery(this.request, AVR_LOCK_COMM);
+        log.debug('DB QUERY [Avr::Service:get]: Debug', {sql_query: queryString});
+        const db = new DBService(queryString);
+        const response = await db.get(this.request.query.limit);
+        log.debug('RESPONSE [Avr::Service:get]: Debug', {response: response, method: 'GET'});
+        return response;
     }
 
 }

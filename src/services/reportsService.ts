@@ -3,6 +3,7 @@ import {ReportLKAgentSale, ReportLKAgentProlongation, ReportLKAgentNextPayment} 
 import {REPORTS_LK_AGENT_SALE, REPORTS_LK_AGENT_PROLONGATION, REPORTS_LK_AGENT_NEXT_PAYMENT} from '../constants/reports';
 import {DBService} from '../services/DBService';
 import {HandlerErrorService} from '../services/handleErrorService';
+import {log} from '../api/log';
 
 function getQuery(request, reportType) {
     let param = request.query;
@@ -61,33 +62,51 @@ export class ReportsService {
     }
 
     public async getNextPayment(): Promise<ReportLKAgentNextPayment> {
+        log.debug('REQUEST [Reports::Service:getNextPayment]: Debug', {request: this.request.originalUrl, method: 'GET'});
         let errorHandler = new HandlerErrorService(this.request);
         let error = errorHandler.validateQuery(this.requiredParams);
         if (error) {
+            log.warn('QUERY [Reports::Service:getNextPayment]: Warning', {response: error, method: 'GET', code: 400});
             return error;
         }
-        const db = new DBService(getQuery(this.request, REPORTS_LK_AGENT_NEXT_PAYMENT));
-        return await db.get(this.request.query.limit);
+        const queryString = getQuery(this.request, REPORTS_LK_AGENT_NEXT_PAYMENT);
+        log.debug('DB QUERY [Reports::Service:getNextPayment]: Debug', {sql_query: queryString});
+        const db = new DBService(queryString);
+        const response = await db.get(this.request.query.limit);
+        log.debug('RESPONSE [Reports::Service:getNextPayment]: Debug', {response: response, method: 'GET'});
+        return response;
     }
 
     public async getSale(): Promise<ReportLKAgentSale> {
+        log.debug('REQUEST [Reports::Service:getSale]: Debug', {request: this.request.originalUrl, method: 'GET'});
         let errorHandler = new HandlerErrorService(this.request);
         let error = errorHandler.validateQuery(this.requiredParams);
         if (error) {
+            log.warn('QUERY [Reports::Service:getSale]: Warning', {response: error, method: 'GET', code: 400});
             return error;
         }
-        const db = new DBService(getQuery(this.request, REPORTS_LK_AGENT_SALE));
-        return await db.get(this.request.query.limit);
+        const queryString = getQuery(this.request, REPORTS_LK_AGENT_SALE);
+        log.debug('DB QUERY [Reports::Service:getSale]: Debug', {sql_query: queryString});
+        const db = new DBService(queryString);
+        const response = await db.get(this.request.query.limit);
+        log.debug('RESPONSE [Reports::Service:getSale]: Debug', {response: response, method: 'GET'});
+        return response;
     }
 
     public async getProlongation(): Promise<ReportLKAgentProlongation> {
+        log.debug('REQUEST [Reports::Service:getProlongation]: Debug', {request: this.request.originalUrl, method: 'GET'});
         let errorHandler = new HandlerErrorService(this.request);
         let error = errorHandler.validateQuery(this.requiredParams);
         if (error) {
+            log.warn('QUERY [Reports::Service:getProlongation]: Warning', {response: error, method: 'GET', code: 400});
             return error;
         }
-        const db = new DBService(getQuery(this.request, REPORTS_LK_AGENT_PROLONGATION));
-        return await db.get(this.request.query.limit);
+        const queryString = getQuery(this.request, REPORTS_LK_AGENT_PROLONGATION);
+        log.debug('DB QUERY [Reports::Service:getProlongation]: Debug', {sql_query: queryString});
+        const db = new DBService(queryString);
+        const response = await db.get(this.request.query.limit);
+        log.debug('RESPONSE [Reports::Service:getProlongation]: Debug', {response: response, method: 'GET'});
+        return response;
     }
 
 }
