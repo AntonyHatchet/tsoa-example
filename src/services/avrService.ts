@@ -9,13 +9,13 @@ function getQuery(request, reportType) {
     switch (reportType) {
         case AVR_LOCK_COMM: return `
             select count(*)
-            from avr.vsk_agent_lock_comm_avr
+            from public.report_avr_locks
             where
                 policy_begin_date between '${param.startDateFrom}' and '${param.startDateTo}' and
                 policy_end_date between '${param.endDateFrom}' and '${param.endDateTo}' and
                 agent_agreement_id = ${param.agreementId};
             select *
-            from avr.vsk_agent_lock_comm_avr
+            from public.report_avr_locks
             where
                 policy_begin_date between '${param.startDateFrom}' and '${param.startDateTo}' and
                 policy_end_date between '${param.endDateFrom}' and '${param.endDateTo}' and

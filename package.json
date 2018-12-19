@@ -5,7 +5,7 @@
   "scripts": {
     "start": "npm run build && node ./dist/server.js",
     "build": "npm run clean && npm run lint && npm run swagger-gen && npm run routes-gen && tsc && npm run copy-swagger-ui",
-    "lint": "tslint --type-check --project tsconfig.json ./src/**/*.ts",
+    "lint": "tslint --project tsconfig.json ./src/**/*.ts",
     "clean": "rimraf dist",
     "swagger-gen": "tsoa swagger",
     "routes-gen": "tsoa routes",

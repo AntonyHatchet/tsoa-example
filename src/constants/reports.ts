@@ -1,2 +1,3 @@
 export const REPORTS_LK_AGENT_SALE = 0;
 export const REPORTS_LK_AGENT_NEXT_PAYMENT = 1;
+export const REPORTS_LK_AGENT_PROLONGATION = 2;

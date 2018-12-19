@@ -16,6 +16,16 @@ export interface ReportLKAgentSaleData extends BaseReport {
     created: number; // Дата создания записи
 }
 
+export interface ReportLKAgentProlongationData extends BaseReport {
+    ins_type: string; // Вид (страхования)
+    insurant: string; // Страхователь (ФИО / наименование)
+    policy_begin_date: string; // Дата начала ответственности
+    policy_end_date: string; // Дата окончания ответственности
+    policy_gpw: number; // Страховая премия начисленная (RUR)
+    commission: number; // КВ начисленное (RUR)
+    created: number; // Дата создания записи
+}
+
 export interface ReportLKAgentNextPaymentData extends BaseReport {
     insurant: string; // Страхователь
     sum_to_pay: number; // Сумма к оплате (в чём неизвестно)
@@ -27,6 +37,13 @@ export interface ReportLKAgentSale {
     success: boolean;
     error?: any;
     data?: ReportLKAgentSaleData[];
+    pageCount?: number;
+}
+
+export interface ReportLKAgentProlongation {
+    success: boolean;
+    error?: any;
+    data?: ReportLKAgentProlongationData[];
     pageCount?: number;
 }
 
