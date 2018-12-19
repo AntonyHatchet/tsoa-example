@@ -2,6 +2,7 @@
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
 import { AvrController } from './controllers/avrController';
 import { ReportsController } from './controllers/reportsController';
+import { CommonController } from './controllers/commonController';
 import * as express from 'express';
 
 const models: TsoaRoute.Models = {
@@ -90,6 +91,30 @@ const models: TsoaRoute.Models = {
             "pageCount": { "dataType": "double" },
         },
     },
+    "ReportLKAgentProlongationData": {
+        "properties": {
+            "agent_nsi": { "dataType": "string", "required": true },
+            "agent": { "dataType": "string", "required": true },
+            "agent_agreement_num": { "dataType": "string", "required": true },
+            "agent_agreement_id": { "dataType": "double", "required": true },
+            "policy_no": { "dataType": "string", "required": true },
+            "ins_type": { "dataType": "string", "required": true },
+            "insurant": { "dataType": "string", "required": true },
+            "policy_begin_date": { "dataType": "string", "required": true },
+            "policy_end_date": { "dataType": "string", "required": true },
+            "policy_gpw": { "dataType": "double", "required": true },
+            "commission": { "dataType": "double", "required": true },
+            "created": { "dataType": "double", "required": true },
+        },
+    },
+    "ReportLKAgentProlongation": {
+        "properties": {
+            "success": { "dataType": "boolean", "required": true },
+            "error": { "dataType": "any" },
+            "data": { "dataType": "array", "array": { "ref": "ReportLKAgentProlongationData" } },
+            "pageCount": { "dataType": "double" },
+        },
+    },
 };
 const validationService = new ValidationService(models);
 
@@ -149,6 +174,43 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.GetSale.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/v1/reports/prolongation',
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new ReportsController();
+
+
+            const promise = controller.GetProlongation.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/v1/HealthCheck',
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new CommonController();
+
+
+            const promise = controller.GetHealthCheck.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
 
