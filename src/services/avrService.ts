@@ -4,26 +4,38 @@ import {AVR_LOCK_COMM} from '../constants/avr';
 import {DbService} from '../services/databaseService';
 import {HandlerErrorService} from '../services/handleErrorService';
 import {log} from '../api/log';
+import {utils} from '../api/utils';
+
+function generateQuery(table, params) {
+    let hasStartDate = utils.isDateValid(params.startDateFrom) && utils.isDateValid(params.startDateTo);
+    let hasEndDate = utils.isDateValid(params.endDateFrom) && utils.isDateValid(params.endDateTo);
+    let condStartDate = hasStartDate ?
+        `policy_begin_date between '${params.startDateFrom}' and '${params.startDateTo}' and` : '';
+    let condEndDate = hasEndDate ?
+        `policy_end_date between '${params.endDateFrom}' and '${params.endDateTo}' and` : '';
+
+    return `
+        select count(*)
+        from ${table}
+        where
+            ${condStartDate}
+            ${condEndDate}
+            agent_agreement_id = ${params.agreementId};
+        select *
+        from ${table}
+        where
+            ${condStartDate}
+            ${condEndDate}
+            agent_agreement_id = ${params.agreementId}
+        limit ${params.limit}
+        offset ${params.page * params.limit};
+    `;
+}
 
 function getQuery(request, reportType) {
-    let param = request.query;
+    let params = request.query;
     switch (reportType) {
-        case AVR_LOCK_COMM: return `
-            select count(*)
-            from public.report_avr_locks
-            where
-                policy_begin_date between '${param.startDateFrom}' and '${param.startDateTo}' and
-                policy_end_date between '${param.endDateFrom}' and '${param.endDateTo}' and
-                agent_agreement_id = ${param.agreementId};
-            select *
-            from public.report_avr_locks
-            where
-                policy_begin_date between '${param.startDateFrom}' and '${param.startDateTo}' and
-                policy_end_date between '${param.endDateFrom}' and '${param.endDateTo}' and
-                agent_agreement_id = ${param.agreementId}
-            limit ${param.limit}
-            offset ${param.page * param.limit};
-        `;
+        case AVR_LOCK_COMM: return generateQuery('public.report_avr_locks', params);
         default: return '';
     }
 }
